@@ -22,7 +22,7 @@ oc process -f mongodb-statefulset-replication.yaml | oc apply -f-
 
 The RocketChat image is stored in the [Red Hat Container Catalog](https://registry.access.redhat.com) (RHCC). A valid Red Hat subscription is required in order to retrieve the image.
 
-Create a new secret called _rhcc_ containing your credentials to the Red Hat Customer Portal
+Create a new secret called _rhcc_ containing your credentials to the Red Hat Customer Portal - you must do this even if you have a subscribed OCP cluster that can already pull from the Red Hat Container Registry...
 
 ```
 oc secrets new-dockercfg rhcc \
