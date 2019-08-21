@@ -144,7 +144,7 @@ parameters:
 - description: Name of the RocketChat tag that should be used.
   displayName: RocketChat Tag
   name: ROCKETCHAT_IMAGE_TAG
-  value: "0.56.0-1"
+  value: "1.1.1-15"
   required: true
 - description: Name of the MongoDB Service.
   displayName: MongoDB Service Name
