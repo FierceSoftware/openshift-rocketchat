@@ -46,3 +46,27 @@ oc process -f rocketchat.yaml -p HOSTNAME_HTTP=chat-dev.apps.example.com -p ACCO
 
 Once deployed, the application will be available at the provided hostname.
 
+
+## Deploying Rocket.Chat for ChatOps
+
+Run the initial Rocket.Chat setup & admin account creation, then create a room for your #workshops-team (or whatever).  Configure LDAP with the following (if using RH IDM/FreeIPA):
+
+- LDAP General - Enable: True
+- LDAP General - Login Fallback: True
+- LDAP General - Find user after login: True
+- LDAP General - Host: idm.example.com
+- LDAP General - Port: 636
+- LDAP General - Reconnect: True
+- LDAP General - Encryption: SSL/LDAPS
+- LDAP General - Regect Unauthorized: False
+- LDAP General - Base DN: cn=accounts,dc=example,dc=com
+- LDAP Authentication - Enable: True
+- LDAP Authentication - User DN: cn=Directory Manager
+- LDAP Authentication - Password: duh_fill_this_one_out_yourself
+- LDAP Sync/Import - Username Field: uid
+- LDAP Sync/Import - Unique Identifier Field: uid
+- LDAP User Search - Filter: (objectclass=*)
+- LDAP User Search - Scope: sub
+- LDAP User Search - Search Field: uid
+
+You'll also probably want to create a user (in LDAP) for Jenkins to interact with Rocketchat, if using this as part of a ChatOps implementation with a build pipeline.  Something like "rc-jenkins" maybe, I dunno, call it whatever you'd like.
