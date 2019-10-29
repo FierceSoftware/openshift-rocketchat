@@ -6,7 +6,17 @@ This repository contains templates and tooling for taking Rocket Chat to Product
 
 Mongo is deployed as a StatefulSet and requires access to at least 3 PersistentVolumes for its backing storage.
 
-##  Deployment
+##  Deployment - Automatic
+
+There's a simple deployment script that can either prompt a user for variables or take them set in the Bash script.  As long as you have an OpenShift Cluster and Red Hat RHN then you can simply run:
+
+```
+$ ./deployer.sh
+```
+
+And answer the prompts to deploy the full Rocket.Chat on OCP stack.
+
+##  Deployment - Manual
 
 Create a new project
 
@@ -25,7 +35,7 @@ The RocketChat image is stored in the [Red Hat Container Catalog](https://regist
 Create a new secret called _rhcc_ containing your credentials to the Red Hat Customer Portal - you must do this even if you have a subscribed OCP cluster that can already pull from the Red Hat Container Registry...
 
 ```
-oc secrets new-dockercfg rhcc \
+oc create secret docker-registry rhcc \
     --docker-username=<username> \
     --docker-password=<password> \
     --docker-email=<email> \
