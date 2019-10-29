@@ -6,7 +6,17 @@ This repository contains templates and tooling for taking Rocket Chat to Product
 
 Mongo is deployed as a StatefulSet and requires access to at least 3 PersistentVolumes for its backing storage.
 
-##  Deployment - Automatic
+##  Deployment - Automated
+
+The deployment script ```./deploy.sh``` can also take preset environmental variables to provision without prompting the user.  To do so, copy over the ```example.vars.sh``` file, set the variables, source and run the deployer.
+
+```
+$ cp example.vars.sh vars.sh
+$ vim vars.sh
+$ source ./vars.sh && ./deployer.sh
+```
+
+##  Deployment - Interactive
 
 There's a simple deployment script that can either prompt a user for variables or take them set in the Bash script.  As long as you have an OpenShift Cluster and Red Hat RHN then you can simply run:
 
