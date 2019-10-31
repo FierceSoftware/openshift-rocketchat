@@ -62,6 +62,12 @@ objects:
                 fieldPath: metadata.namespace
           - name: Accounts_UseDNSDomainCheck
             value: "${ACCOUNT_DNS_DOMAIN_CHECK}"
+          - name: ADMIN_USERNAME
+            value: "${ADMIN_USERNAME}"
+          - name: ADMIN_EMAIL
+            value: "${ADMIN_EMAIL}"
+          - name: ADMIN_PASS
+            value: "${ADMIN_PASS}"
           - name: ROOT_URL
             value: "http://${HOSTNAME_HTTP}"
           - name: MONGODB_USERNAME
@@ -201,3 +207,19 @@ parameters:
   name: MONGODB_REPLICA_NAME_SECRET_KEY
   value: "replica-name"
   required: true
+- displayName: Rocket.Chat Admin Username
+  description: Username of the initial admin user
+  name: ADMIN_USERNAME
+  value: "rcadmin"
+  required: true
+- displayName: Rocket.Chat Admin Email
+  description: Email address associated with the initial admin user
+  name: ADMIN_EMAIL
+  value: "you@example.com"
+  required: true
+- displayName: Rocket.Chat Admin Password
+  description: Password for the initial admin user, can be generated
+  name: ADMIN_PASS
+  required: true
+  generate: expression
+  from: "[a-zA-Z0-9]{12}"

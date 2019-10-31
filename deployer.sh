@@ -3,14 +3,17 @@
 ## Default variables to use
 export INTERACTIVE=${INTERACTIVE:="true"}
 export OCP_HOST=${OCP_HOST:=""}
-export ADMIN_USERNAME=${ADMIN_USERNAME:=""}
-export ADMIN_PASSWORD=${ADMIN_PASSWORD:=""}
+export OCP_USERNAME=${OCP_USERNAME:=""}
+export OCP_PASSWORD=${OCP_PASSWORD:=""}
 export ROCKET_CHAT_ROUTE=${ROCKET_CHAT_ROUTE:="rocketchat.example.com"}
 export OCP_CREATE_PROJECT=${OCP_CREATE_PROJECT:="true"}
 export OCP_PROJECT_NAME=${OCP_PROJECT_NAME:="chatops-rocketchat"}
 export RH_RHN=${RH_RHN:=""}
 export RH_EMAIL=${RH_EMAIL:=""}
 export RH_PASSWORD=${RH_PASSWORD:=""}
+export ADMIN_USERNAME=${ADMIN_USERNAME:="rcadmin"}
+export ADMIN_PASS=${ADMIN_PASS:="sup3rs3cr3t"}
+export ADMIN_EMAIL=${ADMIN_EMAIL:="you@example.com"}
 
 ## Make the script interactive to set the variables
 if [ "$INTERACTIVE" = "true" ]; then
@@ -19,19 +22,36 @@ if [ "$INTERACTIVE" = "true" ]; then
 		export OCP_HOST="$choice";
 	fi
 
-	read -rp "OpenShift Username: ($ADMIN_USERNAME): " choice;
+	read -rp "OpenShift Username: ($OCP_USERNAME): " choice;
 	if [ "$choice" != "" ] ; then
-		export ADMIN_USERNAME="$choice";
+		export OCP_USERNAME="$choice";
 	fi
 
-	read -rp "OpenShift Password: ($ADMIN_PASSWORD): " choice;
+	read -rsp "OpenShift Password: ($OCP_PASSWORD): " choice;
 	if [ "$choice" != "" ] ; then
-		export ADMIN_PASSWORD="$choice";
+		export OCP_PASSWORD="$choice";
+		echo -e ""
 	fi
 
 	read -rp "Rocket.Chat Route: ($ROCKET_CHAT_ROUTE): " choice;
 	if [ "$choice" != "" ] ; then
 		export ROCKET_CHAT_ROUTE="$choice";
+	fi
+
+	read -rp "Rocket.Chat Admin Username: ($ADMIN_USERNAME): " choice;
+	if [ "$choice" != "" ] ; then
+		export ADMIN_USERNAME="$choice";
+	fi
+
+	read -rsp "Rocket.Chat Admin Password: ($ADMIN_PASS): " choice;
+	if [ "$choice" != "" ] ; then
+		export ADMIN_PASS="$choice";
+		echo -e ""
+	fi
+
+	read -rp "Rocket.Chat Admin Email: ($ADMIN_EMAIL): " choice;
+	if [ "$choice" != "" ] ; then
+		export ADMIN_EMAIL="$choice";
 	fi
 
 	read -rp "Create OpenShift Project? (true/false) ($OCP_CREATE_PROJECT): " choice;
@@ -54,15 +74,16 @@ if [ "$INTERACTIVE" = "true" ]; then
 		export RH_EMAIL="$choice";
 	fi
 
-	read -rp "Red Hat RHN Password ($RH_PASSWORD): " choice;
+	read -rsp "Red Hat RHN Password ($RH_PASSWORD): " choice;
 	if [ "$choice" != "" ] ; then
 		export RH_PASSWORD="$choice";
+		echo -e ""
 	fi
 fi
 
 # Log in
 echo "Log in to OpenShift..."
-oc login $OCP_HOST -u $ADMIN_USERNAME -p $ADMIN_PASSWORD
+oc login $OCP_HOST -u $OCP_USERNAME -p $OCP_PASSWORD
 
 # Create/Use Project
 echo "Create/Set Project..."
@@ -88,4 +109,4 @@ echo "Add Secret to Service Account..."
 oc secrets add serviceaccount/default secrets/rhcc --for=pull
 
 # Deploy Rocket.Chat
-oc process -f rocketchat.yaml -p HOSTNAME_HTTP="$ROCKET_CHAT_ROUTE" -p ACCOUNT_DNS_DOMAIN_CHECK=false | oc apply -f-
+oc process -f rocketchat.yaml -p HOSTNAME_HTTP="$ROCKET_CHAT_ROUTE" -p ACCOUNT_DNS_DOMAIN_CHECK=false -p ADMIN_USERNAME="$ADMIN_USERNAME" -p ADMIN_PASS="$ADMIN_PASS" -p ADMIN_EMAIL="$ADMIN_EMAIL" | oc apply -f-
