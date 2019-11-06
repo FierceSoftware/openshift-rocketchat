@@ -31,7 +31,7 @@ if [ "$INTERACTIVE" = "true" ]; then
 		export OCP_AUTH_TYPE="$choice";
 	fi
 
-    if [ $OCP_AUTH_TYPE == "userpass" ]; true
+    if [ $OCP_AUTH_TYPE == "userpass" ]; then
 
         read -rp "OpenShift Username: ($OCP_USERNAME): " choice;
         if [ "$choice" != "" ] ; then
@@ -48,7 +48,7 @@ if [ "$INTERACTIVE" = "true" ]; then
 
     fi
 
-    if [ $OCP_AUTH_TYPE == "token" ]; true
+    if [ $OCP_AUTH_TYPE == "token" ]; then
 
         read -rp "OpenShift Token: ($OCP_TOKEN): " choice;
         if [ "$choice" != "" ] ; then
