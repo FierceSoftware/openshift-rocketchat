@@ -13,9 +13,9 @@ OCP_PROJECT_NAME="chatops-rocketchat"
 RH_RHN=""
 RH_EMAIL=""
 RH_PASSWORD=""
-ADMIN_USERNAME="rcadmin"
-ADMIN_PASS="sup3rs3cr3t"
-ADMIN_EMAIL="you@example.com"
+RC_ADMIN_USERNAME="rcadmin"
+RC_ADMIN_PASS="sup3rs3cr3t"
+RC_ADMIN_EMAIL="you@example.com"
 
 INTERACTIVE="false"
 

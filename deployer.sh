@@ -15,9 +15,9 @@ export OCP_PROJECT_NAME=${OCP_PROJECT_NAME:="chatops-rocketchat"}
 export RH_RHN=${RH_RHN:=""}
 export RH_EMAIL=${RH_EMAIL:=""}
 export RH_PASSWORD=${RH_PASSWORD:=""}
-export ADMIN_USERNAME=${ADMIN_USERNAME:="rcadmin"}
-export ADMIN_PASS=${ADMIN_PASS:="sup3rs3cr3t"}
-export ADMIN_EMAIL=${ADMIN_EMAIL:="you@example.com"}
+export RC_ADMIN_USERNAME=${RC_ADMIN_USERNAME:="rcadmin"}
+export RC_ADMIN_PASS=${RC_ADMIN_PASS:="sup3rs3cr3t"}
+export RC_ADMIN_EMAIL=${RC_ADMIN_EMAIL:="you@example.com"}
 
 ## Make the script interactive to set the variables
 if [ "$INTERACTIVE" = "true" ]; then
@@ -64,20 +64,20 @@ if [ "$INTERACTIVE" = "true" ]; then
 		export ROCKET_CHAT_ROUTE="$choice";
 	fi
 
-	read -rp "Rocket.Chat Admin Username: ($ADMIN_USERNAME): " choice;
+	read -rp "Rocket.Chat Admin Username: ($RC_ADMIN_USERNAME): " choice;
 	if [ "$choice" != "" ] ; then
-		export ADMIN_USERNAME="$choice";
+		export RC_ADMIN_USERNAME="$choice";
 	fi
 
-	read -rsp "Rocket.Chat Admin Password: ($ADMIN_PASS): " choice;
+	read -rsp "Rocket.Chat Admin Password: ($RC_ADMIN_PASS): " choice;
 	if [ "$choice" != "" ] ; then
-		export ADMIN_PASS="$choice";
+		export RC_ADMIN_PASS="$choice";
 	fi
 	echo -e ""
 
-	read -rp "Rocket.Chat Admin Email: ($ADMIN_EMAIL): " choice;
+	read -rp "Rocket.Chat Admin Email: ($RC_ADMIN_EMAIL): " choice;
 	if [ "$choice" != "" ] ; then
-		export ADMIN_EMAIL="$choice";
+		export RC_ADMIN_EMAIL="$choice";
 	fi
 
 	read -rp "Create OpenShift Project? (true/false) ($OCP_CREATE_PROJECT): " choice;
@@ -135,4 +135,4 @@ echo "Add Secret to Service Account..."
 oc secrets add serviceaccount/default secrets/rhcc --for=pull
 
 ## Deploy Rocket.Chat
-oc process -f rocketchat.yaml -p HOSTNAME_HTTP="$ROCKET_CHAT_ROUTE" -p ACCOUNT_DNS_DOMAIN_CHECK=false -p ADMIN_USERNAME="$ADMIN_USERNAME" -p ADMIN_PASS="$ADMIN_PASS" -p ADMIN_EMAIL="$ADMIN_EMAIL" | oc apply -f-
+oc process -f rocketchat.yaml -p HOSTNAME_HTTP="$ROCKET_CHAT_ROUTE" -p ACCOUNT_DNS_DOMAIN_CHECK=false -p ADMIN_USERNAME="$RC_ADMIN_USERNAME" -p ADMIN_PASS="$RC_ADMIN_PASS" -p ADMIN_EMAIL="$RC_ADMIN_EMAIL" | oc apply -f-
