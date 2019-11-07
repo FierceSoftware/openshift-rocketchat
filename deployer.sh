@@ -142,7 +142,7 @@ oc secrets add serviceaccount/default secrets/rhcc --for=pull
 
 ## Deploy Rocket.Chat
 echo -e "Deploying Rocket.Chat...\n"
-if [[ "$ROCKET_CHAT_ROUTE_EDGE_TLS" == "true"]]; then
+if [ "$ROCKET_CHAT_ROUTE_EDGE_TLS" == "true"]; then
 	oc process -f rocketchat-secure.yaml -p HOSTNAME_HTTP="$ROCKET_CHAT_ROUTE" -p ACCOUNT_DNS_DOMAIN_CHECK=false -p ADMIN_USERNAME="$RC_ADMIN_USERNAME" -p ADMIN_PASS="$RC_ADMIN_PASS" -p ADMIN_EMAIL="$RC_ADMIN_EMAIL" | oc apply -f-
 else
 	oc process -f rocketchat.yaml -p HOSTNAME_HTTP="$ROCKET_CHAT_ROUTE" -p ACCOUNT_DNS_DOMAIN_CHECK=false -p ADMIN_USERNAME="$RC_ADMIN_USERNAME" -p ADMIN_PASS="$RC_ADMIN_PASS" -p ADMIN_EMAIL="$RC_ADMIN_EMAIL" | oc apply -f-
