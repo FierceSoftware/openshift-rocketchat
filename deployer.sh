@@ -120,7 +120,7 @@ oc login $OCP_HOST $OCP_AUTH
 ## Create/Use Project
 echo -e "Create/Set Project...\n"
 if [ "$OCP_CREATE_PROJECT" = "true" ]; then
-    oc new-project $OCP_PROJECT_NAME --description="ChatOps with Rocket.Chat" --display-name="ChatOps - Rocket.Chat"
+    oc new-project $OCP_PROJECT_NAME --description="ChatOps with Rocket.Chat" --display-name="[Shared] ChatOps - Rocket.Chat"
 fi
 if [ "$OCP_CREATE_PROJECT" = "false" ]; then
     oc project $OCP_PROJECT_NAME
