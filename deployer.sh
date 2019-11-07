@@ -32,7 +32,7 @@ if [ "$INTERACTIVE" == "true" ]; then
 		export OCP_AUTH_TYPE="$choice";
 	fi
 
-    if [ $OCP_AUTH_TYPE == "userpass" ]; then
+    if [ "$OCP_AUTH_TYPE" = "userpass" ]; then
 
         read -rp "OpenShift Username: ($OCP_USERNAME): " choice;
         if [ "$choice" != "" ] ; then
@@ -49,7 +49,7 @@ if [ "$INTERACTIVE" == "true" ]; then
 
     fi
 
-    if [ $OCP_AUTH_TYPE == "token" ]; then
+    if [ "$OCP_AUTH_TYPE" = "token" ]; then
 
         read -rp "OpenShift Token: ($OCP_TOKEN): " choice;
         if [ "$choice" != "" ] ; then
@@ -119,10 +119,10 @@ oc login $OCP_HOST $OCP_AUTH
 
 ## Create/Use Project
 echo -e "Create/Set Project...\n"
-if [ "$OCP_CREATE_PROJECT" == "true" ]; then
+if [ "$OCP_CREATE_PROJECT" = "true" ]; then
     oc new-project $OCP_PROJECT_NAME --description="ChatOps with Rocket.Chat" --display-name="ChatOps - Rocket.Chat"
 fi
-if [ "$OCP_CREATE_PROJECT" == "false" ]; then
+if [ "$OCP_CREATE_PROJECT" = "false" ]; then
     oc project $OCP_PROJECT_NAME
 fi
 
@@ -142,7 +142,7 @@ oc secrets add serviceaccount/default secrets/rhcc --for=pull
 
 ## Deploy Rocket.Chat
 echo -e "Deploying Rocket.Chat...\n"
-if [ "$ROCKET_CHAT_ROUTE_EDGE_TLS" == "true"]; then
+if [ "$ROCKET_CHAT_ROUTE_EDGE_TLS" = "true" ]; then
 	oc process -f rocketchat-secure.yaml -p HOSTNAME_HTTP="$ROCKET_CHAT_ROUTE" -p ACCOUNT_DNS_DOMAIN_CHECK=false -p ADMIN_USERNAME="$RC_ADMIN_USERNAME" -p ADMIN_PASS="$RC_ADMIN_PASS" -p ADMIN_EMAIL="$RC_ADMIN_EMAIL" | oc apply -f-
 else
 	oc process -f rocketchat.yaml -p HOSTNAME_HTTP="$ROCKET_CHAT_ROUTE" -p ACCOUNT_DNS_DOMAIN_CHECK=false -p ADMIN_USERNAME="$RC_ADMIN_USERNAME" -p ADMIN_PASS="$RC_ADMIN_PASS" -p ADMIN_EMAIL="$RC_ADMIN_EMAIL" | oc apply -f-
