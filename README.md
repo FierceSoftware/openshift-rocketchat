@@ -2,6 +2,11 @@
 
 This repository contains templates and tooling for taking Rocket Chat to Production on OpenShift Container Platform.
 
+There are two deployment options, either selectable:
+
+- ```rocketchat.yaml``` - HTTP Route
+- ```rocketchat-secure.yaml``` - HTTPS Route with Edge TLS Termination
+
 ## Prerequisites
 
 Mongo is deployed as a StatefulSet and requires access to at least 3 PersistentVolumes for its backing storage.
@@ -12,7 +17,7 @@ If deploying via the Automated or Interactive methods you may set the initial Ad
 
 The deployment script ```./deploy.sh``` can also take preset environmental variables to provision without prompting the user.  To do so, copy over the ```example.vars.sh``` file, set the variables, source and run the deployer.
 
-```
+```bash
 $ cp example.vars.sh vars.sh
 $ vim vars.sh
 $ source ./vars.sh && ./deployer.sh
@@ -22,7 +27,7 @@ $ source ./vars.sh && ./deployer.sh
 
 There's a simple deployment script that can either prompt a user for variables or take them set in the Bash script.  As long as you have an OpenShift Cluster and Red Hat RHN then you can simply run:
 
-```
+```bash
 $ ./deployer.sh
 ```
 
@@ -32,22 +37,22 @@ And answer the prompts to deploy the full Rocket.Chat on OCP stack.
 
 Create a new project
 
-```
-oc new-project rocketchat
+```bash
+$ oc new-project rocketchat
 ```
 
 Deploy the MongoDB StatefulSet using the included template
 
-```
-oc process -f mongodb-statefulset-replication.yaml | oc apply -f-
+```bash
+$ oc process -f mongodb-statefulset-replication.yaml | oc apply -f-
 ```
 
 The RocketChat image is stored in the [Red Hat Container Catalog](https://registry.access.redhat.com) (RHCC). A valid Red Hat subscription is required in order to retrieve the image.
 
 Create a new secret called _rhcc_ containing your credentials to the Red Hat Customer Portal - you must do this even if you have a subscribed OCP cluster that can already pull from the Red Hat Container Registry...
 
-```
-oc create secret docker-registry rhcc \
+```bash
+$ oc create secret docker-registry rhcc \
     --docker-username=<username> \
     --docker-password=<password> \
     --docker-email=<email> \
@@ -56,14 +61,17 @@ oc create secret docker-registry rhcc \
 
 Add the secret to the default service account
 
-```
-oc secrets add serviceaccount/default secrets/rhcc --for=pull
+```bash
+$ oc secrets add serviceaccount/default secrets/rhcc --for=pull
 ```
 
 Deploy the RocketChat template. Be sure to include the hostname of the application as a template parameter. 
 
-```
-oc process -f rocketchat.yaml -p HOSTNAME_HTTP=chat-dev.apps.example.com -p ACCOUNT_DNS_DOMAIN_CHECK=false | oc apply -f-
+```bash
+# HTTP
+$ oc process -f rocketchat.yaml -p HOSTNAME_HTTP=chat-dev.apps.example.com -p ACCOUNT_DNS_DOMAIN_CHECK=false | oc apply -f-
+# HTTPS Edge TLS
+$ oc process -f rocketchat-secure.yaml -p HOSTNAME_HTTP=chat-dev.apps.example.com -p ACCOUNT_DNS_DOMAIN_CHECK=false | oc apply -f-
 ```
 
 Once deployed, the application will be available at the provided hostname.
@@ -100,5 +108,4 @@ Once deployed, the application will be available at the provided hostname.
 
 - You'll also probably want to create a user (in LDAP) for Jenkins to interact with Rocketchat, if using this as part of a ChatOps implementation with a build pipeline.  Something like "rc-jenkins" maybe, I dunno, call it whatever you'd like.
 - You have the option of manually inviting all the LDAP synced users to the #devsecops-workshop channel, or just get em to ```/join #devsecops-workshop```.  For some reason setting the Room to a Default and setting it to Auto Join doesn't work.
--
 
