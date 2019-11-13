@@ -9,10 +9,11 @@ export OCP_AUTH=${OCP_AUTH:=""}
 export OCP_USERNAME=${OCP_USERNAME:=""}
 export OCP_PASSWORD=${OCP_PASSWORD:=""}
 export OCP_TOKEN=${OCP_TOKEN:=""}
-export ROCKET_CHAT_ROUTE=${ROCKET_CHAT_ROUTE:="rocketchat.example.com"}
-export ROCKET_CHAT_ROUTE_EDGE_TLS=${ROCKET_CHAT_ROUTE_EDGE_TLS:="true"}
+export OC_ARG_OPTIONS=${OC_ARG_OPTIONS:=""}
 export OCP_CREATE_PROJECT=${OCP_CREATE_PROJECT:="true"}
 export OCP_PROJECT_NAME=${OCP_PROJECT_NAME:="chatops-rocketchat"}
+export ROCKET_CHAT_ROUTE=${ROCKET_CHAT_ROUTE:="rocketchat.example.com"}
+export ROCKET_CHAT_ROUTE_EDGE_TLS=${ROCKET_CHAT_ROUTE_EDGE_TLS:="true"}
 export RH_RHN=${RH_RHN:=""}
 export RH_EMAIL=${RH_EMAIL:=""}
 export RH_PASSWORD=${RH_PASSWORD:=""}
@@ -115,35 +116,35 @@ fi
 
 ## Log in
 echo -e "Log in to OpenShift...\n"
-oc login $OCP_HOST $OCP_AUTH
+oc $OC_ARG_OPTIONS login $OCP_HOST $OCP_AUTH
 
 ## Create/Use Project
 echo -e "Create/Set Project...\n"
 if [ "$OCP_CREATE_PROJECT" = "true" ]; then
-    oc new-project $OCP_PROJECT_NAME --description="ChatOps with Rocket.Chat" --display-name="[Shared] ChatOps - Rocket.Chat"
+    oc $OC_ARG_OPTIONS new-project $OCP_PROJECT_NAME --description="ChatOps with Rocket.Chat" --display-name="[Shared] ChatOps"
 fi
 if [ "$OCP_CREATE_PROJECT" = "false" ]; then
-    oc project $OCP_PROJECT_NAME
+    oc $OC_ARG_OPTIONS project $OCP_PROJECT_NAME
 fi
 
 ## Deploy MongoDB
 echo -e "Deploy MongoDB...\n"
-oc process -f mongodb-statefulset-replication.yaml | oc apply -f-
+oc $OC_ARG_OPTIONS process -f mongodb-statefulset-replication.yaml | oc apply -f-
 echo -e "Sleep for 10 seconds...\n"
 sleep 10
 
 ## Create Image Pull Secret
 echo -e "Create Image Pull Secret...\n"
-oc create secret docker-registry rhcc --docker-username=$RH_RHN --docker-password=$RH_PASSWORD --docker-email=$RH_EMAIL --docker-server=registry.connect.redhat.com
+oc $OC_ARG_OPTIONS create secret docker-registry rhcc --docker-username=$RH_RHN --docker-password=$RH_PASSWORD --docker-email=$RH_EMAIL --docker-server=registry.connect.redhat.com
 
 ## Add secret to default SA
 echo -e "Add Secret to Service Account...\n"
-oc secrets add serviceaccount/default secrets/rhcc --for=pull
+oc $OC_ARG_OPTIONS secrets add serviceaccount/default secrets/rhcc --for=pull
 
 ## Deploy Rocket.Chat
 echo -e "Deploying Rocket.Chat...\n"
 if [ "$ROCKET_CHAT_ROUTE_EDGE_TLS" = "true" ]; then
-	oc process -f rocketchat-secure.yaml -p HOSTNAME_HTTP="$ROCKET_CHAT_ROUTE" -p ACCOUNT_DNS_DOMAIN_CHECK=false -p ADMIN_USERNAME="$RC_ADMIN_USERNAME" -p ADMIN_PASS="$RC_ADMIN_PASS" -p ADMIN_EMAIL="$RC_ADMIN_EMAIL" | oc apply -f-
+	oc $OC_ARG_OPTIONS process -f rocketchat-secure.yaml -p HOSTNAME_HTTP="$ROCKET_CHAT_ROUTE" -p ACCOUNT_DNS_DOMAIN_CHECK=false -p ADMIN_USERNAME="$RC_ADMIN_USERNAME" -p ADMIN_PASS="$RC_ADMIN_PASS" -p ADMIN_EMAIL="$RC_ADMIN_EMAIL" | oc apply -f-
 else
-	oc process -f rocketchat.yaml -p HOSTNAME_HTTP="$ROCKET_CHAT_ROUTE" -p ACCOUNT_DNS_DOMAIN_CHECK=false -p ADMIN_USERNAME="$RC_ADMIN_USERNAME" -p ADMIN_PASS="$RC_ADMIN_PASS" -p ADMIN_EMAIL="$RC_ADMIN_EMAIL" | oc apply -f-
+	oc $OC_ARG_OPTIONS process -f rocketchat.yaml -p HOSTNAME_HTTP="$ROCKET_CHAT_ROUTE" -p ACCOUNT_DNS_DOMAIN_CHECK=false -p ADMIN_USERNAME="$RC_ADMIN_USERNAME" -p ADMIN_PASS="$RC_ADMIN_PASS" -p ADMIN_EMAIL="$RC_ADMIN_EMAIL" | oc apply -f-
 fi
