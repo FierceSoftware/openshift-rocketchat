@@ -12,6 +12,8 @@ export OCP_TOKEN=${OCP_TOKEN:=""}
 export OC_ARG_OPTIONS=${OC_ARG_OPTIONS:=""}
 export OCP_CREATE_PROJECT=${OCP_CREATE_PROJECT:="true"}
 export OCP_PROJECT_NAME=${OCP_PROJECT_NAME:="chatops-rocketchat"}
+export OCP_PROJECT_DISPLAY_NAME=${OCP_PROJECT_DISPLAY_NAME:="[Shared] ChatOps"}
+export OCP_PROJECT_DESCRIPTION=${OCP_PROJECT_DESCRIPTION:="ChatOps with Rocket.Chat"}
 export ROCKET_CHAT_ROUTE=${ROCKET_CHAT_ROUTE:="rocketchat.example.com"}
 export ROCKET_CHAT_ROUTE_EDGE_TLS=${ROCKET_CHAT_ROUTE_EDGE_TLS:="true"}
 export RH_RHN=${RH_RHN:=""}
@@ -121,7 +123,7 @@ oc $OC_ARG_OPTIONS login $OCP_HOST $OCP_AUTH
 ## Create/Use Project
 echo -e "Create/Set Project...\n"
 if [ "$OCP_CREATE_PROJECT" = "true" ]; then
-    oc $OC_ARG_OPTIONS new-project $OCP_PROJECT_NAME --description="ChatOps with Rocket.Chat" --display-name="[Shared] ChatOps"
+    oc $OC_ARG_OPTIONS new-project $OCP_PROJECT_NAME --description=$OCP_PROJECT_DESCRIPTION --display-name=$OCP_PROJECT_DISPLAY_NAME
 fi
 if [ "$OCP_CREATE_PROJECT" = "false" ]; then
     oc $OC_ARG_OPTIONS project $OCP_PROJECT_NAME
