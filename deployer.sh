@@ -123,7 +123,7 @@ oc $OC_ARG_OPTIONS login $OCP_HOST $OCP_AUTH
 ## Create/Use Project
 echo -e "Create/Set Project...\n"
 if [ "$OCP_CREATE_PROJECT" = "true" ]; then
-    oc $OC_ARG_OPTIONS new-project $OCP_PROJECT_NAME --description=$OCP_PROJECT_DESCRIPTION --display-name=$OCP_PROJECT_DISPLAY_NAME
+    oc $OC_ARG_OPTIONS new-project $OCP_PROJECT_NAME --description="$OCP_PROJECT_DESCRIPTION" --display-name="$OCP_PROJECT_DISPLAY_NAME"
 fi
 if [ "$OCP_CREATE_PROJECT" = "false" ]; then
     oc $OC_ARG_OPTIONS project $OCP_PROJECT_NAME
